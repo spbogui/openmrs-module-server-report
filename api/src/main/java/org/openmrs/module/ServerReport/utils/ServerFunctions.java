@@ -217,21 +217,21 @@ public class ServerFunctions {
             ResultSet resultSet = stmt.getResultSet();
             ResultSetMetaData metaData = resultSet.getMetaData();
             int colCount = metaData.getColumnCount();
-//
+
 //            System.out.println("Number of columns : " + colCount);
 //            Map<String, String> columns = new HashMap<String, String>();
 
-            for (int i = 1; i <= colCount; i++) {
-                System.out.println( i + " - Column Name : " + metaData.getColumnName(i) + " | Column Type : " + metaData.getColumnClassName(i));
-                // columns.put(metaData.getColumnName(i), metaData.getColumnClassName(i));
-            }
+//            for (int i = 1; i <= colCount; i++) {
+//                System.out.println( i + " - Column Name : " + metaData.getColumnName(i) + " | Column Type : " + metaData.getColumnClassName(i));
+//                // columns.put(metaData.getColumnName(i), metaData.getColumnClassName(i));
+//            }
 
             while (resultSet.next()) {
                 Map<String, Object> rs = new LinkedHashMap<String, Object>();
 
                 for (int i = 1; i <= colCount; i++) {
 
-                    System.out.println( i + " - Column Name : " + metaData.getColumnName(i) + " | Column Type : " + metaData.getColumnClassName(i));
+                    //System.out.println( i + " - Column Name : " + metaData.getColumnName(i) + " | Column Type : " + metaData.getColumnClassName(i));
 
                     if (metaData.getColumnClassName(i).equals("java.lang.String")) {
                         rs.put(metaData.getColumnName(i), resultSet.getString(i));
