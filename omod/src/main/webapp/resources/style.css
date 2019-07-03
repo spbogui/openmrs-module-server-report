@@ -1,0 +1,18 @@
+#page-title {
+    background-color: #1aac9b;
+    color: #fff;
+    padding: 10px;
+}
+
+body {
+    font-size: 12px;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #1aac9b;
+}
+
+li.nav-item > a.active {
+    text-decoration: none;
+    font-weight: bold;
+}

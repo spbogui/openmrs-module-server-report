@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>BOGUI SERGE PACOME</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+	<require_version>${openMRSVersion}</require_version>
+	<!-- / Module Properties -->
+
+	
+	<!-- Module Activator -->
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.ServerReportActivator</activator>
+	
+	
+	<!-- Adds link to admin page -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
+	</extension>
+
+	<!-- Adds link to menu bar -->
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.ServerReportGutterLink
+		</class>
+	</extension>
+
+	<!-- Privileges  -->
+	<privilege>
+		<name>Manage Server Report</name>
+		<description>Can Manage SIGDEP 2 Server Report</description>
+	</privilege>
+	<privilege>
+		<name>Run Server Report</name>
+		<description>Can Run SIGDEP 2 Server Report</description>
+	</privilege>
+	<privilege>
+		<name>View Server Report</name>
+		<description>Can View SIGDEP 2 Server Report</description>
+	</privilege>
+	<privilege>
+		<name>Add Server Report</name>
+		<description>Can Add SIGDEP 2 Server Report</description>
+	</privilege>
+	<privilege>
+		<name>Delete Server Report</name>
+		<description>Can Delete SIGDEP 2 Server Report</description>
+	</privilege>
+	<!-- /Privilèges  -->
+
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles></mappingFiles>
+
+	<!-- Packages that will be scanned for JPA annotations -->
+	<packagesWithMappedClasses>
+		org.openmrs.module.ServerReport
+	</packagesWithMappedClasses>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+</module>
+

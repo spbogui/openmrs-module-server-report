@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    <changeSet id="server-report-user-location-2019-06-14" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_location"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_location">
+            <column name="user_location_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_location"
+                                 constraintName="user_location_to_users" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="server-report-user-locations-2019-06-14" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_locations"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_locations">
+            <column defaultValueNumeric="0" name="user_location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="location_id,user_location_id" tableName="user_locations"/>
+
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="user_locations"
+                                 constraintName="location_for_users_definitions" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="location_id" referencedTableName="location"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_location_id" baseTableName="user_locations"
+                                 constraintName="location_to_users" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="user_location_id" referencedTableName="user_location"/>
+    </changeSet>
+
+    <changeSet id="server-report-category-option-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_category_option"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_category_option">
+            <column name="option_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="sql_query" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="server-report-category-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_category"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_category">
+            <column name="category_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="server-report-category-category-option-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_category_category_option"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_category_category_option">
+            <column name="category_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="category_option_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="server_category_category_option"
+                                 constraintName="category_for_category_option" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="category_id" referencedTableName="server_category"/>
+
+        <addForeignKeyConstraint baseColumnNames="category_option_id" baseTableName="server_category_category_option"
+                                 constraintName="category_option_to_category" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="option_id" referencedTableName="server_category_option"/>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator">
+            <column name="indicator_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="sql_query" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="int" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="server_indicator"
+                                 constraintName="category_for_indicator" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="category_id" referencedTableName="server_category"/>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-dataset-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator_dataset"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator_dataset">
+            <column name="indicator_dataset_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-dataset-indicator-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator_dataset_indicator"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator_dataset_indicator">
+            <column name="indicator_dataset_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="indicator_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_indicator_dataset_indicator_indicator"
+                                 baseTableName="server_indicator_dataset_indicator" baseColumnNames="indicator_id"
+                                 referencedTableName="server_indicator" referencedColumnNames="indicator_id"/>
+        <addForeignKeyConstraint constraintName="server_indicator_dataset_indicator_dataset"
+                                 baseTableName="server_indicator_dataset_indicator" baseColumnNames="indicator_dataset_id"
+                                 referencedTableName="server_indicator_dataset" referencedColumnNames="indicator_dataset_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-rate-2019-06-22" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator_rate">
+            <column name="indicator_rate_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="formula" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <!--<column name="numerator" type="int">-->
+                <!--<constraints nullable="false"/>-->
+            <!--</column>-->
+            <!--<column name="denominator" type="int">-->
+                <!--<constraints nullable="false"/>-->
+            <!--</column>-->
+            <column name="category_id" type="int" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="server_indicator_rate"
+                                 constraintName="category_for_indicator_rate" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="category_id" referencedTableName="server_category"/>
+        <!--<addForeignKeyConstraint baseColumnNames="numerator" baseTableName="server_indicator_rate"
+                                 constraintName="numerator_for_indicator_rate" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="indicator_id" referencedTableName="server_indicator"/>
+        <addForeignKeyConstraint baseColumnNames="denominator" baseTableName="server_indicator_rate"
+                                 constraintName="denominator_for_indicator_rate" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="indicator_id" referencedTableName="server_indicator"/>-->
+    </changeSet>
+
+    <changeSet id="server-report-indicator-rate-dataset-2019-06-15" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator_rate_dataset"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator_rate_dataset">
+            <column name="indicator_rate_dataset_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="varchar(50)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-rate-dataset-indicator-rate-2019-06-21" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_indicator_rate_dataset_indicator_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_indicator_rate_dataset_indicator_rate">
+            <column name="indicator_rate_dataset_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="indicator_rate_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="indicator_r_ds_indicator_r_for_indicator_r"
+                                 baseTableName="server_indicator_rate_dataset_indicator_rate" baseColumnNames="indicator_rate_id"
+                                 referencedTableName="server_indicator_rate" referencedColumnNames="indicator_rate_id"/>
+
+        <addForeignKeyConstraint constraintName="indicator_r_ds_indicator_r_for_dataset_indicator_r_ds"
+                                 baseTableName="server_indicator_rate_dataset_indicator_rate" baseColumnNames="indicator_rate_dataset_id"
+                                 referencedTableName="server_indicator_rate_dataset" referencedColumnNames="indicator_rate_dataset_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-2019-06-23" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_report"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_report">
+            <column name="report_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="report_name" type="varchar(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="roles" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_creator"
+                                 baseTableName="server_report" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="server_report_changed_by"
+                                 baseTableName="server_report" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="server_report_voided_by"
+                                 baseTableName="server_report" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+    </changeSet>
+
+    <changeSet id="server-parameter-2019-06-25" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_parameter"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_parameter">
+            <column name="parameter_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="parameter_data_type" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-dataset-2019-06-23" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_report_indicator_dataset"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_report_indicator_dataset">
+            <column name="report_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="indicator_dataset_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_indicator_dataset_report"
+                                 baseTableName="server_report_indicator_dataset" baseColumnNames="report_id"
+                                 referencedTableName="server_report" referencedColumnNames="report_id"/>
+        <addForeignKeyConstraint constraintName="server_report_indicator_dataset_indicator_dataset"
+                                 baseTableName="server_report_indicator_dataset" baseColumnNames="indicator_dataset_id"
+                                 referencedTableName="server_indicator_dataset" referencedColumnNames="indicator_dataset_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-indicator-rate-dataset-2019-06-23" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_report_indicator_rate_dataset"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_report_indicator_rate_dataset">
+            <column name="report_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="indicator_rate_dataset_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_indicator_rate_dataset_report"
+                                 baseTableName="server_report_indicator_rate_dataset" baseColumnNames="report_id"
+                                 referencedTableName="server_report" referencedColumnNames="report_id"/>
+        <addForeignKeyConstraint constraintName="server_report_indicator_rate_dataset_indicator_dataset"
+                                 baseTableName="server_report_indicator_rate_dataset" baseColumnNames="indicator_rate_dataset_id"
+                                 referencedTableName="server_indicator_rate_dataset" referencedColumnNames="indicator_rate_dataset_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-parameter-2019-06-23" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_report_parameter"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_report_parameter">
+            <column name="report_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="parameter_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_parameter_report"
+                                 baseTableName="server_report_parameter" baseColumnNames="report_id"
+                                 referencedTableName="server_report" referencedColumnNames="report_id"/>
+        <addForeignKeyConstraint constraintName="server_report_parameter_parameter"
+                                 baseTableName="server_report_parameter" baseColumnNames="parameter_id"
+                                 referencedTableName="server_parameter" referencedColumnNames="parameter_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-report-request-2019-06-23" author="BOGUI SERGE">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_report_report_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_report_report_request">
+            <column name="request_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="request_period_start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_period_end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_location" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="longblob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="saved" type="tinyint(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_report_request_location"
+                                 baseTableName="server_report_report_request" baseColumnNames="request_location"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report_request_report"
+                                 baseTableName="server_report_report_request" baseColumnNames="report_id"
+                                 referencedTableName="server_report" referencedColumnNames="report_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report_request_creator"
+                                 baseTableName="server_report_report_request" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report_request_changed_by"
+                                 baseTableName="server_report_report_request" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report_request_voided_by"
+                                 baseTableName="server_report_report_request" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report_request_user_location"
+                                 baseTableName="server_report_report_request" baseColumnNames="user_location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="server-report-request-parameter-2019-06-25" author="BOGUI SERGE PACOME E">
+        <createTable tableName="server_report_request_parameters">
+            <column name="request_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="parameter_id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="server_report_report_request_parameters_request"
+                                 baseTableName="server_report_request_parameters" baseColumnNames="request_id"
+                                 referencedTableName="server_report_report_request" referencedColumnNames="request_id"/>
+        <addForeignKeyConstraint constraintName="server_report_report__parameters_parameter"
+                                 baseTableName="server_report_request_parameters" baseColumnNames="parameter_id"
+                                 referencedTableName="server_parameter" referencedColumnNames="parameter_id"/>
+    </changeSet>
+
+    <changeSet id="server-listing-2019-06-27" author="BOGUI SERGE PACOME E">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="server_listing"/>
+            </not>
+        </preConditions>
+        <createTable tableName="server_listing">
+            <column name="listing_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sql_query" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
