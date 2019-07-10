@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.ServerReport.api.db.hibernate;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
@@ -25,7 +28,9 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ServerReport.*;
 import org.openmrs.module.ServerReport.api.db.ServerReportDAO;
+import org.openmrs.module.ServerReport.utils.xml.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -485,5 +490,185 @@ public class HibernateServerReportDAO implements ServerReportDAO {
 		}
 
 		return query.list();
+	}
+
+	@Override
+	public List<ServerReportRequest> getServerReportRequest(User user) {
+		List<ServerReportRequest> reportRequests = sessionFactory.getCurrentSession()
+				.createQuery("FROM ServerReportRequest s WHERE s.voided = false ").list();
+		if (user.isSuperUser()) {
+			return reportRequests;
+		}
+
+		List<ServerReportRequest> result = new ArrayList<ServerReportRequest>();
+		for (ServerReportRequest s :
+				reportRequests) {
+			for (Location l : getUserLocation(user)) {
+				if (s.getUserLocation().getLocations().contains(l)) {
+					result.add(s);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<ServerReportRequest> getServerReportRequest(Integer requestId, User user) {
+
+//		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ServerReportRequest.class);
+//		return criteria.add(Restrictions.eq("report", getServerReport(requestId))).add(Restrictions.in("userLocation.locations", getUserLocation(user))).list();
+
+		List<ServerReportRequest> reportRequests = sessionFactory.getCurrentSession()
+				.createQuery("FROM ServerReportRequest s WHERE s.report.reportId = :reportId AND s.voided = false ")
+				.setParameter("reportId", requestId)/*
+				.setParameterList("location", getUserLocation(user))*/.list();
+
+		List<ServerReportRequest> result = new ArrayList<ServerReportRequest>();
+
+		if (user.isSuperUser()) {
+			return reportRequests;
+		}
+		for (ServerReportRequest s :
+				reportRequests) {
+			for (Location l : getUserLocation(user)) {
+				if (s.getUserLocation().getLocations().contains(l)) {
+					result.add(s);
+				}
+			}
+		}
+
+		return result;
+
+	}
+
+	@Override
+	public byte[] generateRequest(ServerReport serverReport, Map<String, Object> dataParam) {
+		ReportXmlClass reportValue = new ReportXmlClass();
+
+		List<DataSetXmlClass> dataSetXmlClasses = new ArrayList<DataSetXmlClass>();
+
+		for (IndicatorDataSet indicatorDataSet : serverReport.getIndicatorDataSets()) {
+			DataSetXmlClass dataSetXmlClass = new DataSetXmlClass();
+			dataSetXmlClass.setCode(indicatorDataSet.getCode());
+			dataSetXmlClass.setName(indicatorDataSet.getName());
+
+			List<IndicatorXmlClass> indicatorXmlClasses = new ArrayList<IndicatorXmlClass>();
+
+			for (Indicator indicator : indicatorDataSet.getIndicators()) {
+
+				IndicatorXmlClass indicatorXmlClass = new IndicatorXmlClass();
+				indicatorXmlClass.setiCode(indicator.getCode());
+				indicatorXmlClass.setName(indicator.getName());
+
+				List<ValueXmlClass> valueXmlClasses = new ArrayList<ValueXmlClass>();
+
+				String sqlQuery = indicator.getSqlQuery();
+
+				if (indicator.getCategory() != null) {
+
+					List<CategoryOption> options = new ArrayList<CategoryOption>();
+					options.addAll(indicator.getCategory().getOptions());
+					Collections.sort(options, new Comparator<CategoryOption>() {
+						@Override
+						public int compare(CategoryOption o1, CategoryOption o2) {
+							return o1.getCode().compareTo(o2.getCode());
+						}
+					});
+
+					for (CategoryOption option : options) {
+						ValueXmlClass valueXmlClass = new ValueXmlClass();
+						valueXmlClass.setCoCode(option.getCode());
+						valueXmlClass.setCoName(option.getName());
+
+						String sql = sqlQuery + " " + option.getSqlQuery();
+
+						Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+
+						for (Map.Entry entry : dataParam.entrySet()) {
+							if (sqlQuery.contains(entry.getKey().toString())) {
+								query.setParameter(entry.getKey().toString(), entry.getValue());
+							}
+						}
+						//System.out.println(query.getQueryString());
+						valueXmlClass.setValue(Integer.toString(query.list().size()));
+						valueXmlClasses.add(valueXmlClass);
+					}
+
+				}
+
+				ValueXmlClass valueXmlClass = new ValueXmlClass();
+				valueXmlClass.setCoCode("T");
+				valueXmlClass.setCoName("Total");
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery);
+
+				for (Map.Entry entry : dataParam.entrySet()) {
+					if (sqlQuery.contains(entry.getKey().toString())) {
+						query.setParameter(entry.getKey().toString(), entry.getValue());
+					}
+				}
+				valueXmlClass.setValue(Integer.toString(query.list().size()));
+				valueXmlClasses.add(valueXmlClass);
+
+				indicatorXmlClass.setValueXmlClasses(valueXmlClasses);
+				indicatorXmlClasses.add(indicatorXmlClass);
+			}
+
+
+			dataSetXmlClass.setIndicatorXmlClasses(indicatorXmlClasses);
+
+			dataSetXmlClasses.add(dataSetXmlClass);
+		}
+
+		reportValue.setDataSetXmlClasses(dataSetXmlClasses);
+
+		XStream xStream = new XStream(new DomDriver());
+		xStream.registerConverter(new ReportXml());
+		xStream.alias("report", ReportXmlClass.class);
+
+		return xStream.toXML(reportValue).getBytes();
+	}
+
+	@Override
+	public ServerReportRequest getOneServerReportRequest(Integer requestId) {
+		return (ServerReportRequest) sessionFactory.getCurrentSession().get(ServerReportRequest.class, requestId);
+	}
+
+	@Override
+	public ServerReportRequest saveReportRequest(ServerReportRequest reportRequest) {
+    	sessionFactory.getCurrentSession().saveOrUpdate(reportRequest);
+		return reportRequest;
+	}
+
+	@Override
+	public ServerReportRequest updateReportRequest(ServerReportRequest reportRequest) {
+		sessionFactory.getCurrentSession().merge(reportRequest);
+		return reportRequest;
+	}
+
+	@Override
+	public UserLocation getUserLocationByUser(User authenticatedUser) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserLocation.class);
+		return  (UserLocation) criteria.add(Restrictions.eq("user", authenticatedUser)).uniqueResult();
+	}
+
+	@Override
+	public ServerReportRequestParameter saveServerRequestParameter(ServerReportRequestParameter requestParameter) {
+    	sessionFactory.getCurrentSession().saveOrUpdate(requestParameter);
+		return requestParameter;
+	}
+
+	@Override
+	public ServerReportRequestParameter updateServerRequestParameter(ServerReportRequestParameter requestParameter) {
+    	sessionFactory.getCurrentSession().merge(requestParameter);
+		return requestParameter;
+	}
+
+	@Override
+	public void removeServerRequest(ServerReportRequest serverReportRequest) {
+    	SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery("DELETE FROM server_report_request_parameters WHERE request_id = ?");
+    	sqlQuery.setInteger(0 , serverReportRequest.getRequestId());
+    	sqlQuery.executeUpdate();
+		sessionFactory.getCurrentSession().delete(serverReportRequest);
 	}
 }

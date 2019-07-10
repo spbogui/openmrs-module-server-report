@@ -20,6 +20,7 @@ import org.openmrs.module.ServerReport.api.ServerReportService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Database methods for {@link ServerReportService}.
@@ -138,6 +139,7 @@ public interface ServerReportDAO {
 	List<Parameter> getAllParameters();
 
 	Parameter saveParameter(Parameter parameter);
+
 	Parameter updateParameter(Parameter parameter);
 
     ServerReport getServerReportByName(String name);
@@ -151,9 +153,30 @@ public interface ServerReportDAO {
 	void removeServerListing(ServerListing serverListing);
 
 	ServerListing saveServerListing(ServerListing serverListing);
+
 	ServerListing updateServerListing(ServerListing serverListing);
 
 	IndicatorRate updateIndicatorRate(IndicatorRate indicatorRate);
 
     List<Object> generateListing(Integer listingId, Date startDate, Date endDate, Integer locationId);
+
+    List<ServerReportRequest> getServerReportRequest(User user);
+
+	List<ServerReportRequest> getServerReportRequest(Integer requestId, User user);
+
+    byte[] generateRequest(ServerReport serverReport, Map<String, Object> dataParam);
+
+	ServerReportRequest getOneServerReportRequest(Integer requestId);
+
+    ServerReportRequest saveReportRequest(ServerReportRequest reportRequest);
+
+    ServerReportRequest updateReportRequest(ServerReportRequest reportRequest);
+
+	UserLocation getUserLocationByUser(User authenticatedUser);
+
+	ServerReportRequestParameter saveServerRequestParameter(ServerReportRequestParameter requestParameter);
+
+	ServerReportRequestParameter updateServerRequestParameter(ServerReportRequestParameter requestParameter);
+
+    void removeServerRequest(ServerReportRequest serverReportRequest);
 }

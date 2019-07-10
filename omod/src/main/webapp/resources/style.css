@@ -16,3 +16,62 @@ li.nav-item > a.active {
     text-decoration: none;
     font-weight: bold;
 }
+
+.dataTables_wrapper {
+    border: 1px solid #95afc0;
+    padding: 5px;
+    background-color: #dfe6e9;
+}
+
+.dataTables_scroll, .dataTables {
+    margin-top: 35px;
+}
+
+#table-listing_wrapper {
+    position:relative;
+}
+
+ul.pagination {
+    color: #000;
+}
+
+ul.pagination li.active {
+    background-color: #1b1e21;
+}
+
+ul.pagination li.active a {
+    color: white;
+    text-decoration: none;
+}
+
+.page-item .active .page-link {
+    color: white;
+    background-color: #1d1d1d;
+    border-color: #1d1d1d;
+}
+
+.page-item .page-link {
+    color: black;
+}
+
+.dt-buttons {
+    width: 50%;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+.dataTables_filter {
+    width: 50%;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.dataTables_wrapper div.row:first-child {
+    margin-bottom: -10px;
+}
+
+.dataTables_filter, .dataTables_length {
+    padding: 0px;
+}

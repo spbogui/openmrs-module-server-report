@@ -30,6 +30,7 @@
                     <table class="table table-sm table-bordered table-hover">
                         <thead>
                         <tr>
+                            <th>Libell&eacute;</th>
                             <th>Nom</th>
                             <th>Type de donn&eacute;es</th>
                             <th width="50px"></th>
@@ -38,15 +39,16 @@
                         <tbody>
                         <c:forEach var="p" items="${parameters}">
                             <tr>
+                                <td>${p.label}</td>
                                 <td>${p.name}</td>
                                 <td>${p.parameterDataType}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <c:url value="/module/ServerReport/manageCategory.form" var="url">
+                                        <c:url value="/module/ServerReport/manageParameter.form" var="url">
                                             <c:param name="parameterId" value="${p.parameterId}"/>
                                         </c:url>
                                         <a href="${ url }" class="btn"><i class="fas fa-edit text-info"></i></a>
-                                        <c:url value="/module/ServerReport/manageCategory.form" var="urlsup">
+                                        <c:url value="/module/ServerReport/manageParameter.form" var="urlsup">
                                             <c:param name="delId" value="${p.parameterId}"/>
                                         </c:url>
                                         <a href="${ urlsup }" class="btn" onclick="return confirm('Voulez-vous vraiment supprimer la ligne ?');">
@@ -67,6 +69,15 @@
                     <form:form action="" commandName="parameter" id="form" method="post" cssClass="">
                         <form:hidden path="parameterId"/>
                         <form:hidden path="uuid"/>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-2 col-form-label text-right">Libell&eacute; du param&egrave;tre</label>
+                            <div class="col-sm-6">
+                                <form:input path="label" id="label" cssClass="form-control"/>
+                                <small id="nameHelp" class="form-text text-muted text-warning">
+                                    <form:errors cssClass="error" path="label"/>
+                                </small>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label text-right">Nom du param&egrave;tre</label>
                             <div class="col-sm-6">

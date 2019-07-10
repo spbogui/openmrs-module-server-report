@@ -19,12 +19,14 @@ import org.openmrs.Location;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or {@link BaseOpenmrsMetadata}.
  */
 @Entity
-@Table(name = "server_report_request")
+@Table(name = "server_report_report_request")
 public class ServerReportRequest extends ReportAbstract {
 
 	private static final long serialVersionUID = 1L;
@@ -34,7 +36,7 @@ public class ServerReportRequest extends ReportAbstract {
 	@Column(name = "request_id")
 	private Integer requestId;
 
-	@Column(name = "report_name", nullable = false, length = 200)
+	@Column(name = "name", nullable = false, length = 200)
 	private String name;
 
 	@Column(name = "request_date", nullable = false)
@@ -48,7 +50,8 @@ public class ServerReportRequest extends ReportAbstract {
 	@Column(name = "request_period_end_date")
 	private Date requestPeriodEndDate;
 
-	@Column(name = "request_location", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "request_location", nullable = false)
 	private Location requestLocation;
 
 	@Column(name = "content", nullable = false)
@@ -59,11 +62,14 @@ public class ServerReportRequest extends ReportAbstract {
 	private ServerReport report;
 
 	@Column(name = "saved")
-	private Boolean saved;
+	private Boolean saved = false;
 
 	@ManyToOne
 	@JoinColumn(nullable = false, name = "user_location_id")
-	private Location userLocation;
+	private UserLocation userLocation;
+
+	@OneToMany(mappedBy = "request")
+	private Set<ServerReportRequestParameter> parameters = new HashSet<ServerReportRequestParameter>();
 
 	public ServerReportRequest() {
 	}
@@ -140,11 +146,24 @@ public class ServerReportRequest extends ReportAbstract {
 		this.saved = saved;
 	}
 
-	public Location getUserLocation() {
+	public UserLocation getUserLocation() {
 		return userLocation;
 	}
 
-	public void setUserLocation(Location userLocation) {
+	public void setUserLocation(UserLocation userLocation) {
 		this.userLocation = userLocation;
 	}
+
+	public Set<ServerReportRequestParameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(Set<ServerReportRequestParameter> parameters) {
+		this.parameters = parameters;
+	}
+
+	public void addParameter(Parameter parameter, String value) {
+		this.getParameters().add(new ServerReportRequestParameter(parameter, value));
+	}
+
 }

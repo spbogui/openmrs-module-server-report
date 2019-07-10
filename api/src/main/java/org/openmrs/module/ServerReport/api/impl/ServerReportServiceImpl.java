@@ -24,6 +24,7 @@ import org.openmrs.module.ServerReport.api.db.ServerReportDAO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * It is a default implementation of {@link ServerReportService}.
@@ -371,5 +372,55 @@ public class ServerReportServiceImpl extends BaseOpenmrsService implements Serve
     @Override
     public List<Object> generateListing(Integer listingId, Date startDate, Date endDate, Integer locationId) {
         return dao.generateListing(listingId, startDate, endDate, locationId);
+    }
+
+    @Override
+    public List<ServerReportRequest> getServerReportRequest(User user) {
+        return dao.getServerReportRequest(user);
+    }
+
+    @Override
+    public List<ServerReportRequest> getServerReportRequest(Integer requestId, User user) {
+        return dao.getServerReportRequest(requestId, user);
+    }
+
+    @Override
+    public ServerReportRequest getOneServerReportRequest(Integer requestId) {
+        return dao.getOneServerReportRequest(requestId);
+    }
+
+    @Override
+    public byte[] generateRequest(ServerReport serverReport, Map<String, Object> dataParam) {
+        return dao.generateRequest(serverReport, dataParam);
+    }
+
+    @Override
+    public ServerReportRequest saveReportRequest(ServerReportRequest reportRequest) {
+        return dao.saveReportRequest(reportRequest);
+    }
+
+    @Override
+    public ServerReportRequest updateReportRequest(ServerReportRequest reportRequest) {
+        return dao.updateReportRequest(reportRequest);
+    }
+
+    @Override
+    public UserLocation getUserLocationByUser(User authenticatedUser) {
+        return dao.getUserLocationByUser(authenticatedUser);
+    }
+
+    @Override
+    public ServerReportRequestParameter saveServerRequestParameter(ServerReportRequestParameter requestParameter) {
+        return dao.saveServerRequestParameter(requestParameter);
+    }
+
+    @Override
+    public ServerReportRequestParameter updateServerRequestParameter(ServerReportRequestParameter requestParameter) {
+        return dao.updateServerRequestParameter(requestParameter);
+    }
+
+    @Override
+    public void removeServerRequest(ServerReportRequest serverReportRequest) {
+        dao.removeServerRequest(serverReportRequest);
     }
 }

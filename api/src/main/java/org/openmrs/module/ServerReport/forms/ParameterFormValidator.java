@@ -21,6 +21,7 @@ public class ParameterFormValidator implements Validator {
             errors.reject("ServerReport", "general.error");
         } else {
             ValidationUtils.rejectIfEmpty(errors, "parameterDataType", null, "Champ requis");
+            ValidationUtils.rejectIfEmpty(errors, "label", null, "Champ requis");
             ValidationUtils.rejectIfEmpty(errors, "name", null, "Champ requis");
 
             if (parameter.getName() != null) {

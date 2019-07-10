@@ -12,6 +12,9 @@ public class Parameter extends BaseOpenmrsObject {
     @Column(name = "parameter_id")
     private Integer parameterId;
 
+    @Column(name = "label", nullable = false, unique = true)
+    private String label;
+
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
@@ -41,6 +44,14 @@ public class Parameter extends BaseOpenmrsObject {
 
     public void setParameterId(Integer parameterId) {
         this.parameterId = parameterId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getName() {

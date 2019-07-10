@@ -3,32 +3,22 @@ package org.openmrs.module.ServerReport.utils.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class IndicatorValue {
-    @XmlAttribute(name = "iCode")
-    private String iCode;
+public class ValueXmlClass {
     @XmlAttribute(name = "coCode")
     private String coCode;
-    @XmlElement(name = "value")
-    private Integer value;
+    @XmlAttribute(name = "coName")
+    private String coName;
+    @XmlAttribute(name = "value")
+    private String value;
 
-    public IndicatorValue() {
+    public ValueXmlClass() {
     }
 
-    public IndicatorValue(String iCode, String coCode, Integer value) {
-        this.iCode = iCode;
+    public ValueXmlClass(String coCode, String value) {
         this.coCode = coCode;
         this.value = value;
-    }
-
-    public String getiCode() {
-        return iCode;
-    }
-
-    public void setiCode(String iCode) {
-        this.iCode = iCode;
     }
 
     public String getCoCode() {
@@ -39,11 +29,19 @@ public class IndicatorValue {
         this.coCode = coCode;
     }
 
-    public Integer getValue() {
+    public String getCoName() {
+        return coName;
+    }
+
+    public void setCoName(String coName) {
+        this.coName = coName;
+    }
+
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

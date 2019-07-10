@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
@@ -149,6 +150,25 @@ public interface ServerReportService extends OpenmrsService {
     IndicatorDataSet updateIndicatorDataSet(IndicatorDataSet indicatorDataSet);
 
     List<Object> generateListing(Integer listingId, Date startDate, Date endDate, Integer locationId);
+
+    List<ServerReportRequest> getServerReportRequest(User user);
+    List<ServerReportRequest> getServerReportRequest(Integer requestId, User user);
+
+    ServerReportRequest getOneServerReportRequest(Integer requestId);
+
+    byte[] generateRequest(ServerReport serverReport, Map<String, Object> dataParam);
+
+    ServerReportRequest saveReportRequest(ServerReportRequest reportRequest);
+
+    ServerReportRequest updateReportRequest(ServerReportRequest reportRequest);
+
+    UserLocation getUserLocationByUser(User authenticatedUser);
+
+    ServerReportRequestParameter saveServerRequestParameter(ServerReportRequestParameter requestParameter);
+
+    ServerReportRequestParameter updateServerRequestParameter(ServerReportRequestParameter requestParameter);
+
+    void removeServerRequest(ServerReportRequest serverReportRequest);
 
 	/*
 	 * Add service methods here

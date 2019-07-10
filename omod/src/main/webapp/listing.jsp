@@ -150,7 +150,7 @@
                                             <form:input path="startDate" id="startDate" cssClass="form-control" disabled="true"/>
                                         </c:if>
                                         <c:if test="${hasStartDate}">
-                                            <form:input path="startDate" id="startDate" cssClass="form-control datepicker"/>
+                                            <form:input path="startDate" id="startDate" cssClass="form-control"/>
                                         </c:if>
                                         <div class="input-group-append">
                                             <span class="input-group-text"><i class="fas fa-calendar"></i></span>

@@ -339,7 +339,7 @@
                                  referencedTableName="users" referencedColumnNames="user_id"/>
     </changeSet>
 
-    <changeSet id="server-parameter-2019-06-25" author="BOGUI SERGE PACOME E">
+    <changeSet id="server-parameter-2019-07-04" author="BOGUI SERGE PACOME E">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="server_parameter"/>
@@ -348,6 +348,9 @@
         <createTable tableName="server_parameter">
             <column name="parameter_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
+            </column>
+            <column name="label" type="varchar(200)">
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="name" type="varchar(200)">
                 <constraints nullable="false" unique="true"/>
@@ -405,7 +408,7 @@
                                  referencedTableName="server_indicator_rate_dataset" referencedColumnNames="indicator_rate_dataset_id"/>
     </changeSet>
 
-    <changeSet id="server-report-parameter-2019-06-23" author="BOGUI SERGE">
+    <changeSet id="server-report-parameter-2019-07-04" author="BOGUI SERGE">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="server_report_parameter"/>
@@ -427,7 +430,7 @@
                                  referencedTableName="server_parameter" referencedColumnNames="parameter_id"/>
     </changeSet>
 
-    <changeSet id="server-report-report-request-2019-06-23" author="BOGUI SERGE">
+    <changeSet id="server-report-report-request-2019-07-04" author="BOGUI SERGE PACOME E">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="server_report_report_request"/>
@@ -500,10 +503,10 @@
                                  referencedTableName="users" referencedColumnNames="user_id"/>
         <addForeignKeyConstraint constraintName="server_report_report_request_user_location"
                                  baseTableName="server_report_report_request" baseColumnNames="user_location_id"
-                                 referencedTableName="location" referencedColumnNames="location_id"/>
+                                 referencedTableName="user_location" referencedColumnNames="user_location_id"/>
     </changeSet>
 
-    <changeSet id="server-report-request-parameter-2019-06-25" author="BOGUI SERGE PACOME E">
+    <changeSet id="server-report-request-parameter-2019-07-04" author="BOGUI SERGE PACOME E">
         <createTable tableName="server_report_request_parameters">
             <column name="request_id" type="int">
                 <constraints primaryKey="true"/>

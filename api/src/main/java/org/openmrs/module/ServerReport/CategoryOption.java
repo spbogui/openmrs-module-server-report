@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "server_category_option")
-public class CategoryOption extends BaseOpenmrsObject {
+public class CategoryOption extends BaseOpenmrsObject implements Comparable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "option_id")
@@ -92,5 +92,15 @@ public class CategoryOption extends BaseOpenmrsObject {
     @Override
     public void setUuid(String uuid) {
         super.setUuid(uuid);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        CategoryOption categoryOption = (CategoryOption)o;
+        if (code.equals(categoryOption.code)) {
+            return code.compareTo(categoryOption.code);
+        }
+
+        return code.compareTo(categoryOption.code);
     }
 }

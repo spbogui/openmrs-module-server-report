@@ -10,6 +10,7 @@ import org.openmrs.module.ServerReport.api.ServerReportService;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.*;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -115,12 +116,12 @@ public class ServerFunctions {
 
     private static Map<String, Object> toJsonHelper(Location loc) {
         Map<String, Object> ret = new LinkedHashMap<String, Object>();
-        Map<String, Object> state = new LinkedHashMap<String, Object>();
-        state.put("opened", "true");
+//        Map<String, Object> state = new LinkedHashMap<String, Object>();
+//        state.put("opened", "true");
 //        StringBuilder sb = new StringBuilder(getName(loc));
         ret.put("id", loc.getLocationId().toString());
         ret.put("text", loc.getName());
-        ret.put("state", state);
+//        ret.put("state", state);
         if (loc.getChildLocations().size() > 0) {
             ret.put("icon", "fas fa-first-aid");
         } else {
@@ -281,5 +282,16 @@ public class ServerFunctions {
             }
         }
         return result;
+    }
+
+
+    public static String getMonthForInt(int num) {
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols(Locale.FRENCH);
+        String[] months = dfs.getMonths();
+        if (num >= 0 && num <= 11 ) {
+            month = months[num];
+        }
+        return month;
     }
 }

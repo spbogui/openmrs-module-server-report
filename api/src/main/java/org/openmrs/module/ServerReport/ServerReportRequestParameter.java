@@ -44,6 +44,11 @@ public class ServerReportRequestParameter implements Serializable {
 	public ServerReportRequestParameter() {
 	}
 
+	public ServerReportRequestParameter(Parameter parameter, String value) {
+		this.setParameter(parameter);
+		this.setValue(value);
+	}
+
 	public ServerReportRequest getRequest() {
 		return request;
 	}
